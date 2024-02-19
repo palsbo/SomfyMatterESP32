@@ -5,8 +5,6 @@
     Use #SP32 WROVER Module in board selector due to partition setting
     Use Partition Scheme: "Huge App.....
 */
-#define DEBUG_DISABLED
-#define debug_
 #include "Matter.h"
 #include <app/server/OnboardingCodesUtil.h>
 #include <credentials/examples/DeviceAttestationCredsExample.h>
