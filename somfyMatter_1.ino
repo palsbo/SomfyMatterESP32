@@ -1,7 +1,7 @@
 /*
-   Matter gateway for Somfy
-   Based on LILYGO Lora Model T2 V1.6.1
-   OBS!
+  Matter gateway for Somfy
+  Based on LILYGO Lora Model T2 V1.6.1
+  OBS!
     Use #SP32 WROVER Module in board selector due to partition setting
     Use Partition Scheme: "Huge App.....
 */
