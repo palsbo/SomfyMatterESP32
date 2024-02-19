@@ -1,7 +1,5 @@
 # SomfyMatter
-![What is this](SomfyMatterESP32.png) 
-
-## ESP32 based controller for Somfy RTS blinds.
+### ESP32 based controller for Somfy RTS blinds.
 Based on Matter and can be paired with all major home automation systems.
 
 Hardware used: 
@@ -13,7 +11,7 @@ Software:
 When using Arduino IDE:
 - Use ESP32 WROOM Module as selected board as the TOGO Lora do not provide the partition option.
 - Select Huge "partition"
-## ✨ Features
+#### ✨ Features
 The sample software provides a Matter node with 3 endpoints for 3 blinds. This can easely be changed.
 
 When paired with Google Home, you can talk to your blinds!!
@@ -21,3 +19,4 @@ When paired with Google Home, you can talk to your blinds!!
 - Hey Googlle - "Close blind one"
 - Hey Googlle - "Open blind one to 30%"
   
+![What is this](SomfyMatterESP32.png) 
