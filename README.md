@@ -8,7 +8,7 @@ When using Arduino IDE:
 - Use ESP32 WROOM Module as selected hardware board as the TOGO Lora do not provide the partition option.
 - Select Huge "partition"
 ## ✨ Features
-The sample software provides a Matter node with 3 endpoints for 2 blinds. This can easely be changed.
+The sample software provides a Matter node with 3 endpoints for 3 blinds. This can easely be changed.
 
 When paired with Google Home, you can talk to your blinds!!
 Hey Googlle - "Open blind one"
