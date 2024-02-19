@@ -11,7 +11,7 @@ When using Arduino IDE:
 The sample software provides a Matter node with 3 endpoints for 3 blinds. This can easely be changed.
 
 When paired with Google Home, you can talk to your blinds!!
-Hey Googlle - "Open blind one"
-Hey Googlle - "Close blind one"
-Hey Googlle - "Open blind one to 30%"
+- Hey Googlle - "Open blind one"
+- Hey Googlle - "Close blind one"
+- Hey Googlle - "Open blind one to 30%"
   
