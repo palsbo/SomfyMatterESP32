@@ -18,5 +18,6 @@ When paired with Google Home, you can talk to your blinds!!
 - Hey Googlle - "Open blind one"
 - Hey Googlle - "Close blind one"
 - Hey Googlle - "Open blind one to 30%"
+
+<img src="SomfyMatterESP32.png" width="480"/>
   
-![What is this](SomfyMatterESP32.png) 
