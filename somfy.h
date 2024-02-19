@@ -1,17 +1,6 @@
 
 #include "config.h"
 #define OPENRTS_BOARD_TTGO_LORA32_V21
-/*
-#define OPENRTS_RADIO_TYPE_SX1278
-#define OPENRTS_RADIO_MISO 19
-#define OPENRTS_RADIO_MOSI 27
-#define OPENRTS_RADIO_SCLK 5
-#define OPENRTS_RADIO_CS   18
-#define OPENRTS_RADIO_RST  23
-#define OPENRTS_RADIO_DATA 32
-#define OPENRTS_LED        25
-#define OPENRTS_OLED_TYPE_SSD1306
-*/
 #define MSG_BUFFER_SIZE (80)
 
 #include <openrts.hpp>
@@ -23,18 +12,17 @@ RTSRemote remote(new RTSPulseOutput_GPIO(OPENRTS_RADIO_DATA), &remoteStore);
 #define numdevs 4
 
 namespace somfyspace {
-typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
-typedef void (*cb_onsubscribe) (char * topic);
-typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
-typedef void (*cb_onchange) (uint32_t addr, uint value);
+  typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
+  typedef void (*cb_onsubscribe) (char * topic);
+  typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
+  typedef void (*cb_onchange) (uint32_t addr, uint value);
 
-cb_onsendrf onsendrf;
-cb_onsubscribe  onsubscribe;
-cb_onsubscribe  onunsubscribe;
-cb_onpublish onpublish;
-cb_onchange ontargetchange;
-cb_onchange onpositionchange;
-
+  cb_onsendrf onsendrf;
+  cb_onsubscribe  onsubscribe;
+  cb_onsubscribe  onunsubscribe;
+  cb_onpublish onpublish;
+  cb_onchange ontargetchange;
+  cb_onchange onpositionchange;
 } //  end of namespace somfyspace
 #include <Arduino_JSON.h>     // https://github.com/arduino-libraries/Arduino_JSON
 
