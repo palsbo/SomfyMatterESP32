@@ -1,6 +1,17 @@
 
 #include "config.h"
 #define OPENRTS_BOARD_TTGO_LORA32_V21
+/*
+  #define OPENRTS_RADIO_TYPE_SX1278
+  #define OPENRTS_RADIO_MISO 19
+  #define OPENRTS_RADIO_MOSI 27
+  #define OPENRTS_RADIO_SCLK 5
+  #define OPENRTS_RADIO_CS   18
+  #define OPENRTS_RADIO_RST  23
+  #define OPENRTS_RADIO_DATA 32
+  #define OPENRTS_LED        25
+  #define OPENRTS_OLED_TYPE_SSD1306
+*/
 #define MSG_BUFFER_SIZE (80)
 
 #include <openrts.hpp>
@@ -12,17 +23,18 @@ RTSRemote remote(new RTSPulseOutput_GPIO(OPENRTS_RADIO_DATA), &remoteStore);
 #define numdevs 4
 
 namespace somfyspace {
-  typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
-  typedef void (*cb_onsubscribe) (char * topic);
-  typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
-  typedef void (*cb_onchange) (uint32_t addr, uint value);
+typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
+typedef void (*cb_onsubscribe) (char * topic);
+typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
+typedef void (*cb_onchange) (uint32_t addr, uint value);
 
-  cb_onsendrf onsendrf;
-  cb_onsubscribe  onsubscribe;
-  cb_onsubscribe  onunsubscribe;
-  cb_onpublish onpublish;
-  cb_onchange ontargetchange;
-  cb_onchange onpositionchange;
+cb_onsendrf onsendrf;
+cb_onsubscribe  onsubscribe;
+cb_onsubscribe  onunsubscribe;
+cb_onpublish onpublish;
+cb_onchange ontargetchange;
+cb_onchange onpositionchange;
+
 } //  end of namespace somfyspace
 #include <Arduino_JSON.h>     // https://github.com/arduino-libraries/Arduino_JSON
 
@@ -154,13 +166,10 @@ class DEVICE {
     int Position = 0;
     int Target = 0;
     uint32_t devAddr;
-    bool firstTime = true;
     char * devId;
     char * name;
     double upTime;
     double downTime;
-    uint16_t endpoint_id;
-    uint16_t cluster_id;
     DEVICE(uint32_t _Addr, char * Id, char * _name, double _upTime, double _downTime) {
       devId = Id;
       devAddr = _Addr;
@@ -182,48 +191,59 @@ class DEVICE {
       subscribe(mqtt_ButtonTopic);
       if (TryToInitializePosition) subscribe(mqtt_PositionTopic);
     }
+    void prepareButton(char * payload) {
+      if ((char)payload[0] == 'U') {
+        if (SomfyUp->Enabled()) BPressed = Up;
+      } else if ((char)payload[0] == 'D') {
+        if (SomfyDown->Enabled()) BPressed = Down;
+      } else if ((char)payload[0] == 'M') {
+        if (SomfyMy->Enabled()) BPressed = My;
+      } else if ((char)payload[0] == 'P') {
+        BPressed = Prog;
+      } else if ((char)payload[0] == 'L') {
+        BPressed = LProg;
+      }
+    }
+
+    void prepareTarget(uint16_t _target) {
+      Target = _target;
+      if (Target != Position) {
+        BPressed = GotoTarget;
+#ifdef debug_
+        snprintf (msg, MSG_BUFFER_SIZE, "Target obtained: %1d \n", Target);
+        Serial.println(msg);
+#endif
+      }
+    }
+
+    void preparePosition(uint16_t _position) {
+      if (TryToInitializePosition) {
+        Position = _position;
+        StartPos = Position;
+        Target = Position;
+        State = Positioned;
+        TargetEnabled = true; //Now it is safe to receive the target.
+#ifdef debug_
+        snprintf (msg, MSG_BUFFER_SIZE, "Position initialized: %1d \n", Position);
+        Serial.println(msg);
+#endif
+      }
+      TryToInitializePosition = false;
+      unsubscribe(mqtt_PositionTopic);
+    }
 
     void onData(const char * topic, char * payload) {
-      Serial.printf("Topic: %s, payload:%s\n",topic, payload);
+      Serial.printf("Topic: %s, payload:%s\n", topic, payload);
       if (strcmp(topic, mqtt_ButtonTopic) == 0) {
-        if ((char)payload[0] == 'U') {
-          if (SomfyUp->Enabled()) BPressed = Up;
-        } else if ((char)payload[0] == 'D') {
-          if (SomfyDown->Enabled()) BPressed = Down;
-        } else if ((char)payload[0] == 'M') {
-          if (SomfyMy->Enabled()) BPressed = My;
-        } else if ((char)payload[0] == 'P') {
-          BPressed = Prog;
-        } else if ((char)payload[0] == 'L') {
-          BPressed = LProg;
-        }
+        prepareButton(payload);
       } else if (strcmp(topic, mqtt_TargetTopic) == 0) {
         payload[sizeof(payload)] = '\0'; // NULL terminate the array
         if ((char)payload[0] != '-') {
-          Target = atoi((char *)payload);
-          if (Target != Position) {
-            BPressed = GotoTarget;
-#ifdef debug_
-            snprintf (msg, MSG_BUFFER_SIZE, "Target obtained: %1d \n", Target);
-            Serial.println(msg);
-#endif
-          }
+          prepareTarget(atoi((char *)payload));
         }
       } else if (strcmp(topic, mqtt_PositionTopic) == 0) {
-        if (TryToInitializePosition) {
-          payload[sizeof(payload)] = '\0'; // NULL terminate the array
-          Position = atoi((char *)payload);
-          StartPos = Position;
-          Target = Position;
-          State = Positioned;
-          TargetEnabled = true; //Now it is safe to receive the target.
-#ifdef debug_
-          snprintf (msg, MSG_BUFFER_SIZE, "Position initialized: %1d \n", Position);
-          Serial.println(msg);
-#endif
-        }
-        TryToInitializePosition = false;
-        unsubscribe(mqtt_PositionTopic);
+        payload[sizeof(payload)] = '\0'; // NULL terminate the array
+        preparePosition(atoi((char *)payload));
       }
     }
 
@@ -372,11 +392,11 @@ class DEVICES {
     DEVICES(DEVICE * _devs[]) : devs{_devs[0], _devs[1], _devs[2], _devs[3]} {
       current = devs[0];
     }
-    
+
     uint8_t getIndexFromTopic(char * topic) {
       return getIndexFromId(topic2devId(topic));
     }
-    
+
     uint8_t getIndexFromAddr(uint32_t addr) {
       for (int i = 0; i < numdevs; i++) {
         if (devs[i] != nullptr) {
