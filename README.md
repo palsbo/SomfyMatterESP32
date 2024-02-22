@@ -9,7 +9,11 @@ Software:
 - based on the greate work: SomfyMQTT by Rudi Radmaker (https://github.com/ruedli/SomfyMQTT)
 
 When using Arduino IDE:
-- Use ESP32 WROOM Module as selected board as the TOGO Lora do not provide the partition option.
+- Use TTGO LoRa32-OLED as selected board.
+- Change the file C:\Users\<USER>\AppData\Local\Arduino15\packages\esp32\hardware\esp32\2.0.14\boards.txt:
+-- change ttgo-lora32.upload.maximum_size=1310720 to ttgo-lora32.upload.maximum_size=1810720
+-- change ttgo-lora32.build.partitions=default to ttgo-lora32.build.partitions=huge_app
+
 - Select Huge "partition"
 #### ✨ Features
 The sample software provides a Matter node with 3 endpoints for 3 blinds. This can easely be changed.

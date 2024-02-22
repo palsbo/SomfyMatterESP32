@@ -1,17 +1,17 @@
 
 #include "config.h"
 #define OPENRTS_BOARD_TTGO_LORA32_V21
-/*
-  #define OPENRTS_RADIO_TYPE_SX1278
-  #define OPENRTS_RADIO_MISO 19
-  #define OPENRTS_RADIO_MOSI 27
-  #define OPENRTS_RADIO_SCLK 5
-  #define OPENRTS_RADIO_CS   18
-  #define OPENRTS_RADIO_RST  23
-  #define OPENRTS_RADIO_DATA 32
-  #define OPENRTS_LED        25
-  #define OPENRTS_OLED_TYPE_SSD1306
-*/
+
+#define OPENRTS_RADIO_TYPE_SX1278
+#define OPENRTS_RADIO_MISO 19
+#define OPENRTS_RADIO_MOSI 27
+#define OPENRTS_RADIO_SCLK 5
+#define OPENRTS_RADIO_CS   18
+#define OPENRTS_RADIO_RST  23
+#define OPENRTS_RADIO_DATA 32
+#define OPENRTS_LED        25
+#define OPENRTS_OLED_TYPE_SSD1306
+
 #define MSG_BUFFER_SIZE (80)
 
 #include <openrts.hpp>
@@ -458,22 +458,6 @@ class DEVICES {
       }
     }
 
-    void begin() {
-      for (int i = 0; i < numdevs; i++) {
-        if (devs[i] != nullptr) devs[i]->begin();
-      }
-    }
-    void init() {
-      for (int i = 0; i < numdevs; i++) {
-        if (devs[i] != nullptr) devs[i]->init();
-      }
-    }
-    void loop() {
-      for (int i = 0; i < numdevs; i++) {
-        if (devs[i] != nullptr) devs[i]->loop();
-      }
-    }
-
     void onSendRf(somfyspace::cb_onsendrf cb) {
       somfyspace::onsendrf = cb;
     }
@@ -514,5 +498,27 @@ class DEVICES {
 
     void onPositionChange(somfyspace::cb_onchange cb) {
       somfyspace::onpositionchange = cb;
+    }
+
+    void begin() {
+      pinMode(OPENRTS_LED, OUTPUT);
+      pinMode(OPENRTS_RADIO_DATA, OUTPUT);
+      radio.begin();
+      radio.setMode(RTS_RADIO_MODE_TRANSMIT);
+      for (int i = 0; i < numdevs; i++) {
+        if (devs[i] != nullptr) devs[i]->begin();
+      }
+    }
+
+    void init() {
+      for (int i = 0; i < numdevs; i++) {
+        if (devs[i] != nullptr) devs[i]->init();
+      }
+    }
+
+    void loop() {
+      for (int i = 0; i < numdevs; i++) {
+        if (devs[i] != nullptr) devs[i]->loop();
+      }
     }
 };

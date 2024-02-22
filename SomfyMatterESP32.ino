@@ -2,8 +2,11 @@
    Matter gateway for Somfy
    Based on LILYGO Lora Model T2 V1.6.1
    OBS!
-    Use #SP32 WROVER Module in board selector due to partition setting
-    Use Partition Scheme: "Huge App.....
+    Use TTGO LoRa32 OLEDselector
+    IMPORTANT due to partition setting: 
+    Change the file C:\Users\<USER>\AppData\Local\Arduino15\packages\esp32\hardware\esp32\2.0.14\boards.txt:
+    change ttgo-lora32.upload.maximum_size=1310720 to ttgo-lora32.upload.maximum_size=1810720
+    change ttgo-lora32.build.partitions=default to ttgo-lora32.build.partitions=huge_app
 */
 #define DEBUG_DISABLED
 #define debug_
