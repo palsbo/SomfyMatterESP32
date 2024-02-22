@@ -20,5 +20,5 @@ When using Arduino IDE:
 #### Software:
 - based on the greate work: SomfyMQTT by Rudi Radmaker (https://github.com/ruedli/SomfyMQTT)
 
-<img src="SomfyMatterESP32.png" width="480"/>
+<img src="public/SomfyMatterESP32.png" width="480"/>
   

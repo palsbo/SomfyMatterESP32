@@ -17,25 +17,28 @@
 #include <openrts.hpp>
 
 RTSRadio_SX1278 radio(OPENRTS_RADIO_CS);
+
 RTSRemoteStore_NVS remoteStore;
 RTSRemote remote(new RTSPulseOutput_GPIO(OPENRTS_RADIO_DATA), &remoteStore);
 
 #define numdevs 4
 
 namespace somfyspace {
-typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
-typedef void (*cb_onsubscribe) (char * topic);
-typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
-typedef void (*cb_onchange) (uint32_t addr, uint value);
 
-cb_onsendrf onsendrf;
-cb_onsubscribe  onsubscribe;
-cb_onsubscribe  onunsubscribe;
-cb_onpublish onpublish;
-cb_onchange ontargetchange;
-cb_onchange onpositionchange;
-
+  typedef void (*cb_onsendrf) (uint32_t addr, uint8_t cmd);
+  typedef void (*cb_onsubscribe) (char * topic);
+  typedef void (*cb_onpublish) (char * topic, char * payload, bool retain);
+  typedef void (*cb_onchange) (uint32_t addr, uint value);
+  
+  cb_onsendrf onsendrf;
+  cb_onsubscribe  onsubscribe;
+  cb_onsubscribe  onunsubscribe;
+  cb_onpublish onpublish;
+  cb_onchange ontargetchange;
+  cb_onchange onpositionchange;
+  
 } //  end of namespace somfyspace
+
 #include <Arduino_JSON.h>     // https://github.com/arduino-libraries/Arduino_JSON
 
 class SomfyCommand {
